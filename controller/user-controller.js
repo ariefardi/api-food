@@ -4,19 +4,24 @@ const getUsers = (req, res) => {
         .once('value')
         .then((snap)=> {
             let temp = snap.val()
+            console.log(temp)
             let users = []
             for (key in temp) {
-                let obj = {
-                    uid: key,
-                    temp
-                }
-                users.push(obj)
+                temp[key].uid = key
+                users.push(temp[key])
             }
             res.json({
                 msg: 'Get Users',
-                users
+                users,
+                status: 200
             })
         })
+        .catch(err=> {
+            res.json({
+                err,
+                status: 500
+            })
+    })
 }
 
 const getOneUsers = (req, res) => {
@@ -25,10 +30,20 @@ const getOneUsers = (req, res) => {
         .once('value')
         .then((snap)=> {
             let user = snap.val()
-            res.json({
-                msg: "get one user",
-                user
-            })
+            if (user) {
+                res.json({
+                    msg: "get one user",
+                    user,
+                    status: 200
+                })
+            }
+            else {
+                res.json({
+                    error: "User not Found",
+                    status: 404
+                })
+            }
+
         })
 }
 
@@ -37,22 +52,22 @@ const getUsersLocations = (req, res) => {
         .once('value')
         .then((snap)=> {
             let temp = snap.val()
+            console.log(temp)
             let users_location = []
             for (key in temp) {
-                let obj = {
-                    uid: key,
-                    temp
-                }
-                users_location.push(obj)
+                temp[key].uid = key
+                users_location.push(temp[key])
             }
             res.json({
                 msg: 'Get Users Location',
-                temp
+                users_location,
+                status: 200
             })
         })
         .catch(err=> {
             res.json({
-                err
+                err,
+                status: 500
             })
         })
 }
@@ -64,13 +79,14 @@ const getOneUserLocations = (req, res) => {
             let user_location = snap.val()
             res.json({
                 msg: "get one user location",
-                user_location
+                user_location,
+                status: 200
             })
         })
         .catch(err=> {
             res.json({
-                err
-
+                err,
+                status: 500
             })
         })
 }

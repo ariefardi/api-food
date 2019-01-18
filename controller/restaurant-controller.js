@@ -4,22 +4,22 @@ const getResto = (req, res) => {
         .once('value')
         .then((snap)=> {
             let temp = snap.val()
+            console.log(temp)
             let restaurant = []
             for (key in temp) {
-                let obj = {
-                    uid: key,
-                    temp
-                }
-                restaurant.push(obj)
+                temp[key].uid = key
+                restaurant.push(temp[key])
             }
             res.json({
                 msg: 'Get resto',
-                restaurant
+                restaurant,
+                status: 200
             })
         })
         .catch(err=> {
             res.json({
-                err
+                err,
+                status: 500
             })
         })
 }
@@ -32,38 +32,45 @@ const getOneResto = (req, res) => {
             let resto = snap.val()
             res.json({
                 msg: "get one restaurant",
-                resto
+                resto,
+                status: 200
             })
         })
         .catch(err=> {
             res.json({
-                err
+                err,
+                status: 500
             })
         })
 }
-const addResto = async (req, res) => {
-    try {
-        const getKey = await db.ref('/restaurants/').push().key
-        const addFood = await db.ref('/restaurants/'+getKey).set({
-            address: req.body.address,
-            img_url: req.body.img_url,
-            latitude: req.body.latitude,
-            longitude: req.body.longitude,
-            name: req.body.name,
-            rating: req.body.rating,
-            seller_id: req.body.seller_id
-        })
-        console.log(getKey)
-        res.json({
-            msg: 'Add some Restaurant'
-        })
-    }
-    catch (e) {
-        res.json({
-            e
-        })
-    }
-}
+// const addResto = async (req, res) => {
+//     try {
+//         const getKey = await db.ref('/restaurants/').push().key
+//         let obj = {
+//             address: req.body.address,
+//             img_url: req.body.img_url,
+//             latitude: req.body.latitude,
+//             longitude: req.body.longitude,
+//             name: req.body.name,
+//             rating: req.body.rating,
+//             open_hours: {},
+//             seller_id: req.body.seller_id
+//         }
+//         obj.open_hours["1"] = req.body.open_hours
+//         const addFood = await db.ref('/restaurants/'+getKey).set({
+//
+//         })
+//         console.log(getKey)
+//         res.json({
+//             msg: 'Add some Restaurant'
+//         })
+//     }
+//     catch (e) {
+//         res.json({
+//             e
+//         })
+//     }
+// }
 
 const editResto = (req, res) => {
     let uid = req.params.id
@@ -82,12 +89,14 @@ const editResto = (req, res) => {
     db.ref('/restaurants/'+uid).update(obj)
         .then(()=> {
             res.json({
-                msg: "Berhasil Edit Restaurant"
+                msg: "Berhasil Edit Restaurant",
+                status: 202
             })
         })
         .catch(err=> {
             res.json({
-                err
+                err,
+                status: 500
             })
         })
 }
@@ -103,12 +112,14 @@ const addFoodResto = async (req, res) => {
         })
         console.log(getKey)
         res.json({
-            msg: 'Add some food'
+            msg: 'Add some food',
+            status: 200
         })
     }
     catch (e) {
         res.json({
-            e
+            e,
+            status: 500
         })
     }
 }
@@ -123,12 +134,14 @@ const editFoodResto = (req, res) => {
     })
         .then(()=> {
             res.json({
-                msg: "Berhasil Edit Food"
+                msg: "Berhasil Edit Food",
+                status: 200
             })
         })
         .catch(err=> {
             res.json({
-                err
+                err,
+                status: 500
             })
         })
 }
@@ -139,12 +152,14 @@ const deleteFood = (req, res) => {
     db.ref('/restaurants/'+uid+'/foods/'+food_uid).set(null)
         .then(()=> {
             res.json({
-                msg: "berhasil delete food"
+                msg: "berhasil delete food",
+                status: 200
             })
         })
         .catch(err=> {
             res.json({
-                err
+                err,
+                status: 500
             })
         })
 }
