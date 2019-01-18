@@ -3,18 +3,18 @@ const getUsers = (req, res) => {
     db.ref('/users')
         .once('value')
         .then((snap)=> {
-            let user = snap.val()
-            let temp = []
-            for (key in user) {
+            let temp = snap.val()
+            let users = []
+            for (key in temp) {
                 let obj = {
                     uid: key,
-                    user
+                    temp
                 }
-                temp.push(obj)
+                users.push(obj)
             }
             res.json({
                 msg: 'Get Users',
-                temp
+                users
             })
         })
 }
@@ -24,12 +24,55 @@ const getOneUsers = (req, res) => {
     db.ref('/users/'+uid)
         .once('value')
         .then((snap)=> {
-            let resto = snap.val()
+            let user = snap.val()
             res.json({
                 msg: "get one user",
-                resto
+                user
             })
         })
 }
 
-module.exports = {getUsers, getOneUsers}
+const getUsersLocations = (req, res) => {
+    db.ref('/users_location')
+        .once('value')
+        .then((snap)=> {
+            let temp = snap.val()
+            let users_location = []
+            for (key in temp) {
+                let obj = {
+                    uid: key,
+                    temp
+                }
+                users_location.push(obj)
+            }
+            res.json({
+                msg: 'Get Users Location',
+                temp
+            })
+        })
+        .catch(err=> {
+            res.json({
+                err
+            })
+        })
+}
+const getOneUserLocations = (req, res) => {
+    const uid = req.params.id
+    db.ref('/users_location/'+uid)
+        .once('value')
+        .then((snap)=> {
+            let user_location = snap.val()
+            res.json({
+                msg: "get one user location",
+                user_location
+            })
+        })
+        .catch(err=> {
+            res.json({
+                err
+
+            })
+        })
+}
+
+module.exports = {getUsers, getOneUsers, getUsersLocations, getOneUserLocations}
