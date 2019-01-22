@@ -30,11 +30,20 @@ const getOneResto = (req, res) => {
         .once('value')
         .then((snap)=> {
             let resto = snap.val()
-            res.json({
-                msg: "get one restaurant",
-                resto,
-                status: 200
-            })
+            if (resto) {
+                res.json({
+                    msg: "get one restaurant",
+                    resto,
+                    status: 200
+                })
+            }
+            else {
+                res.json({
+                    msg: "Restaurant doesn't exist",
+                    status: 404
+                })
+            }
+
         })
         .catch(err=> {
             res.json({
@@ -72,7 +81,7 @@ const getOneResto = (req, res) => {
 //     }
 // }
 
-const editResto = (req, res) => {
+const editResto = async (req, res) => {
     let uid = req.params.id
     let obj = {
         address: req.body.address,
@@ -85,36 +94,62 @@ const editResto = (req, res) => {
         seller_id: req.body.seller_id
     }
     obj.open_hours[req.body.key] = req.body.open_hours
-
-    db.ref('/restaurants/'+uid).update(obj)
-        .then(()=> {
+    try {
+        const getResto = await db.ref('/restaurants/'+uid).once('value')
+        if (getResto.val()) {
+            db.ref('/restaurants/'+uid).update(obj)
+                .then(()=> {
+                    res.json({
+                        msg: "Berhasil Edit Restaurant",
+                        status: 202
+                    })
+                })
+                .catch(err=> {
+                    res.json({
+                        err,
+                        status: 500
+                    })
+                })
+        }
+        else {
             res.json({
-                msg: "Berhasil Edit Restaurant",
-                status: 202
+                msg: 'Restaurant not found',
+                status: 404
             })
+        }
+    }
+    catch (e) {
+        res.json({
+            e
         })
-        .catch(err=> {
-            res.json({
-                err,
-                status: 500
-            })
-        })
+    }
 }
 
 const addFoodResto = async (req, res) => {
     let uid = req.params.id
     try {
-        const getKey = await db.ref('/restaurants/'+uid+'/foods').push().key
-        const addFood = await db.ref('/restaurants/'+uid+'/foods/'+getKey).set({
-            img: req.body.img,
-            name: req.body.name,
-            price: Number(req.body.price)
-        })
-        console.log(getKey)
-        res.json({
-            msg: 'Add some food',
-            status: 200
-        })
+        const getResto = await db.ref('/restaurants/'+uid).once('value')
+        if (getResto.val()) {
+            const getKey = await db.ref('/restaurants/'+uid+'/foods').push().key
+            const addFood = await db.ref('/restaurants/'+uid+'/foods/'+getKey).set({
+                img: req.body.img,
+                name: req.body.name,
+                price: Number(req.body.price)
+            })
+            console.log(getKey)
+            res.json({
+                msg: 'Add some food',
+                status: 200,
+                getKey,
+                getResto
+            })
+        }
+        else {
+            res.json({
+                msg: 'Restaurant not found',
+                status: 404
+            })
+        }
     }
     catch (e) {
         res.json({
@@ -124,44 +159,81 @@ const addFoodResto = async (req, res) => {
     }
 }
 
-const editFoodResto = (req, res) => {
+const editFoodResto = async (req, res) => {
     let uid = req.params.res_id
     let food_uid = req.params.food_uid
-    db.ref('/restaurants/'+uid+'/foods/'+food_uid).set({
-        img: req.body.img,
-        name: req.body.name,
-        price: Number(req.body.price)
-    })
-        .then(()=> {
-            res.json({
-                msg: "Berhasil Edit Food",
-                status: 200
+
+    try {
+        let getResto = await db.ref('/restaurants/'+uid).once('value')
+        let getFood = await db.ref('/restaurants/'+uid+'/foods/'+food_uid).once('value')
+        if (getResto.val() && getFood.val()) {
+            db.ref('/restaurants/'+uid+'/foods/'+food_uid).set({
+                img: req.body.img,
+                name: req.body.name,
+                price: Number(req.body.price)
             })
-        })
-        .catch(err=> {
+                .then(()=> {
+                    res.json({
+                        msg: "Berhasil Edit Food",
+                        status: 200
+                    })
+                })
+                .catch(err=> {
+                    res.json({
+                        err,
+                        status: 500
+                    })
+                })
+        }
+        else {
             res.json({
-                err,
-                status: 500
+                msg: "restaurant/food not found",
+                status: 404
             })
+        }
+
+    }
+    catch (e) {
+        res.json({
+            e
         })
+    }
 }
 
-const deleteFood = (req, res) => {
+const deleteFood = async (req, res) => {
     let uid = req.params.res_id
     let food_uid = req.params.food_uid
-    db.ref('/restaurants/'+uid+'/foods/'+food_uid).set(null)
-        .then(()=> {
+    try {
+        let getResto = await db.ref('/restaurants/'+uid).once('value')
+        let getFood = await db.ref('/restaurants/'+uid+'/foods/'+food_uid).once('value')
+        if (getResto.val() || getFood.val()) {
+            db.ref('/restaurants/'+uid+'/foods/'+food_uid).set(null)
+                .then(()=> {
+                    res.json({
+                        msg: "berhasil delete food",
+                        status: 200
+                    })
+                })
+                .catch(err=> {
+                    res.json({
+                        err,
+                        status: 500
+                    })
+                })
+        }
+        else {
             res.json({
-                msg: "berhasil delete food",
-                status: 200
+                msg: "restaurant/food not found",
+                status: 404
             })
+        }
+    }
+    catch (e) {
+        res.json({
+            e
         })
-        .catch(err=> {
-            res.json({
-                err,
-                status: 500
-            })
-        })
+    }
+
 }
 
 
