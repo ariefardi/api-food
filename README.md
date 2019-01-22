@@ -1,3 +1,17 @@
+#Right before you begin
+##Make sure NODE JS installed
+# pintu-crypto
+Install [Node JS](https://nodejs.org/en/ "Node's Homepage")
+
+## Project setup
+```
+npm install
+```
+
+### Starting server
+```
+npm run start
+```
 **Show One User**
 ----
   Returns json data about a single user.
