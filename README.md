@@ -223,7 +223,7 @@ axios.get('/users/location/all')
 const axios = require('axios');
 
 // Make a request for a user location with a given ID
-axios.get('/users/location/user/1e12ejweh)
+axios.get('/users/location/user/1e12ejweh')
   .then(function (response) {
     // handle success
     console.log(response);
