@@ -101,7 +101,7 @@ axios.get('/users/xaxas12345')
 const axios = require('axios');
 
 // Make a request for a user with a given ID
-axios.get('/users")
+axios.get('/users')
   .then(function (response) {
     // handle success
     console.log(response);
@@ -166,7 +166,7 @@ axios.get('/users")
 const axios = require('axios');
 
 // Make a request for a users location
-axios.get('/users/location/all)
+axios.get('/users/location/all')
   .then(function (response) {
     // handle success
     console.log(response);
@@ -580,7 +580,7 @@ axios.delete('/restaurant/xaxas12345/foods/1231awjfhwa')
 const axios = require('axios');
 
 // Make a request for resturant with given id
-axios.put('/restaurant/update/wfafwj12213, {
+axios.put('/restaurant/update/wfafwj12213', {
     address: 'image-url',
     img_url: 'food-name',
     latitude: 'food-price Number'
