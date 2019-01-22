@@ -101,7 +101,7 @@ axios.get('/users/xaxas12345')
 const axios = require('axios');
 
 // Make a request for a user with a given ID
-axios.get('/users)
+axios.get('/users")
   .then(function (response) {
     // handle success
     console.log(response);
@@ -650,7 +650,7 @@ axios.put('/restaurant/update/wfafwj12213, {
 const axios = require('axios');
 
 // Make a request for a chats 
-axios.get('/chats)
+axios.get('/chats')
   .then(function (response) {
     // handle success
     console.log(response);
