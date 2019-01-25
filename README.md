@@ -676,6 +676,61 @@ axios.get('/chats')
 
 ```
 
+**Show Role**
+----
+  Returns json data about a Role.
+
+* **URL**
+
+  /users/role/:id
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+
+    **Required:**
+ 
+   `id=[string]`
+
+* **Data Params**
+
+    None
+
+* **Success Response:**
+
+  * **Status:** 200 <br />
+    **Content:** `
+        {
+            "msg": "get one user",
+            "role": 3,
+            "status": 200
+        }`
+ 
+* **Error Response:**
+
+  * **Status:** 404 Not Found 
+    **Content:** `{ error : "User not Found" }`
+
+* **Sample Call:**
+
+```js
+const axios = require('axios');
+
+// Make a request for a chats 
+axios.get('/users/role/1TwWWDNu1TVgAgY6bL2skt4eCar2')
+  .then(function (response) {
+    // handle success
+    console.log(response);
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+
+```
+
 
 
   

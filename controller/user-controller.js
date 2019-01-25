@@ -4,7 +4,6 @@ const getUsers = (req, res) => {
         .once('value')
         .then((snap)=> {
             let temp = snap.val()
-            console.log(temp)
             let users = []
             for (key in temp) {
                 temp[key].uid = key
@@ -44,6 +43,29 @@ const getOneUsers = (req, res) => {
                 })
             }
 
+        })
+}
+
+const getUserRole = (req,res) => {
+    const uid = req.params.id
+    db.ref('/users/'+uid)
+        .once('value')
+        .then((snap)=> {
+            let user = snap.val()
+            console.log(user)
+            if (user) {
+                res.json({
+                    msg: "get one user",
+                    role: user.position,
+                    status: 200
+                })
+            }
+            else {
+                res.json({
+                    error: "User not Found",
+                    status: 404
+                })
+            }
         })
 }
 
@@ -91,4 +113,6 @@ const getOneUserLocations = (req, res) => {
         })
 }
 
-module.exports = {getUsers, getOneUsers, getUsersLocations, getOneUserLocations}
+
+
+module.exports = {getUsers, getOneUsers, getUsersLocations, getOneUserLocations, getUserRole}
